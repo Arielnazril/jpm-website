@@ -56,7 +56,6 @@
         font-weight: 800; border: 2px solid white;
     }
 
-    /* Rundown Dropdown Box */
     .dropdown-rundown {
         position: absolute;
         top: calc(100% + 15px);
@@ -100,12 +99,7 @@
     }
 
     .menu-item i { font-size: 1.1rem; color: #64748b; }
-
-    .menu-item:hover {
-        background: #f8fafc;
-        color: #1e293b;
-    }
-
+    .menu-item:hover { background: #f8fafc; color: #1e293b; }
     .menu-item:hover i { color: #f79e1b; }
 
     .menu-item.logout {
@@ -192,6 +186,7 @@
     .price-display {
         font-size: 1.1rem; font-weight: 800; color: #1e293b;
         background: #f8fafc; padding: 10px 20px; border-radius: 15px;
+        white-space: nowrap;
     }
 
     .btn-action {
@@ -211,6 +206,32 @@
     }
     
     .btn-create:hover { background: #f79e1b; color: white; transform: translateY(-3px); }
+
+    /* --- 📱 5. Mobile Optimization --- */
+    @media (max-width: 991px) {
+        .admin-header { top: 15px; right: 15px; }
+        .wrapper { padding: 100px 15px 30px; }
+        
+        .action-bar { flex-direction: column; align-items: flex-start; gap: 20px; }
+        .btn-create { width: 100%; justify-content: center; }
+
+        .stats-row { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .stat-value { font-size: 1.4rem; }
+
+        .table-header-tool { padding: 20px; flex-direction: column; gap: 15px; }
+        .search-input-group { width: 100%; }
+
+        .custom-table thead th, .custom-table tbody td { padding: 15px 20px; }
+        .main-container { border-radius: 25px; }
+        
+        .user-pill { padding: 6px 6px 6px 15px; gap: 10px; }
+    }
+
+    @media (max-width: 576px) {
+        .stats-row { grid-template-columns: 1fr; }
+        .welcome-text h1 { font-size: 1.8rem; }
+        .dropdown-rundown { width: 220px; right: -5px; }
+    }
 </style>
 
 <header class="admin-header">
@@ -302,13 +323,13 @@
                 <i class="bi bi-search text-muted"></i>
                 <input type="text" id="searchInput" placeholder="Cari nama produk...">
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-light rounded-pill px-4 fw-800 border small"><i class="bi bi-filter"></i> Filter</button>
+            <div class="d-flex gap-2 w-100 w-md-auto">
+                <button class="btn btn-light rounded-pill px-4 fw-800 border small flex-grow-1 flex-md-grow-0"><i class="bi bi-filter"></i> Filter</button>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table custom-table">
+        <div class="table-responsive" style="border-radius: 0 0 25px 25px;">
+            <table class="table custom-table mb-0">
                 <thead>
                     <tr>
                         <th width="80">No.</th>
@@ -324,7 +345,7 @@
                     @forelse ($products as $index => $product)
                     <tr>
                         <td class="text-muted fw-bold">{{ $index + 1 }}</td>
-                        <td><div class="product-name">{{ $product->nama_produk }}</div></td>
+                        <td><div class="product-name" style="min-width: 150px;">{{ $product->nama_produk }}</div></td>
                         <td><span class="badge-premium badge-kemasan">{{ $product->kemasan }}</span></td>
                         <td><span class="badge-premium badge-kategori">{{ $product->produk }}</span></td>
                         <td><span class="fw-800 text-dark">{{ $product->berat }}</span></td>
@@ -361,7 +382,7 @@
 </div>
 
 <script>
-    // Search Filter
+    // Search Filter Logic
     document.getElementById('searchInput').addEventListener('keyup', function() {
         let filter = this.value.toLowerCase();
         let rows = document.querySelectorAll('.custom-table tbody tr');

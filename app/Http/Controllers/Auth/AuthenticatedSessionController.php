@@ -43,6 +43,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // PERBAIKAN DI SINI: Tambahkan with() agar Toast di layout muncul
+        return redirect('/')->with('logout_success', 'Berhasil Logout! Sampai jumpa kembali.');
     }
 }

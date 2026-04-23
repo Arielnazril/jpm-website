@@ -7,13 +7,12 @@
 
     <title>@yield('title', config('app.name', 'PT. Jasa Prima Makmur'))</title>
 
-    <!-- BOOTSTRAP 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Favicon -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
-    <!-- SLOT UNTUK CSS KHUSUS HALAMAN -->
     @yield('custom_styles')
 
     <style>
@@ -79,7 +78,6 @@
 </head>
 <body class="bg-light">
 
-    <!-- 🔹 NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
@@ -115,10 +113,10 @@
                                 <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                    <form id="logout-form-main" method="POST" action="{{ route('logout') }}" class="m-0" style="display: none;">
                                         @csrf
-                                        <button type="submit" class="dropdown-item">Logout</button>
                                     </form>
+                                    <button type="button" class="dropdown-item" onclick="confirmLogout()">Logout</button>
                                 </li>
                             </ul>
                         </li>
@@ -128,20 +126,60 @@
         </div>
     </nav>
 
-    <!-- 🔸 KONTEN HALAMAN -->
     <main class="container my-5">
         @yield('content')
     </main>
 
-    <!-- 🔹 FOOTER -->
     <footer class="text-center py-4 mt-5">
         <div class="container">
             <p class="mb-0">&copy; {{ date('Y') }} PT. Jasa Prima Makmur. Solusi Konstruksi Profesional.</p>
         </div>
     </footer>
 
-    <!-- BOOTSTRAP JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 1. Fungsi Konfirmasi Logout
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Yakin ingin keluar?',
+                text: "Anda harus login kembali untuk mengakses area admin.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#1f2937', // jpm-dark
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Logout!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form-main').submit();
+                }
+            });
+        }
+
+        // 2. Logika Toast Notifikasi Berhasil Logout
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('logout_success'))
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ session("logout_success") }}'
+                });
+            @endif
+        });
+    </script>
 
 </body>
 </html>

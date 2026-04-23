@@ -7,7 +7,11 @@ use Illuminate\Support\Facades\Route;
 // =====================
 // 🔹 Halaman Publik (Tanpa Login)
 // =====================
-Route::view('/', 'beranda')->name('beranda');
+// DIUBAH: Menggunakan Route::get agar bisa menangkap session flash message
+Route::get('/', function () {
+    return view('beranda');
+})->name('beranda');
+
 Route::view('/tentang', 'tentang')->name('tentang');
 Route::view('/bisnis', 'bisnis')->name('bisnis');
 Route::view('/proyek', 'proyek')->name('proyek');
@@ -21,7 +25,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // =====================
-// 🔹 Produk (CRUD bisa diakses langsung tanpa login)
+// 🔹 Produk
 // =====================
 Route::resource('products', ProductController::class);
 
